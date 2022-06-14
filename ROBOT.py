@@ -2,8 +2,8 @@ import numpy as np
 import pandas as pd
 from torch import nn
 
-train_file = r"D:/ROBOTLESSON/train.csv"
-test_file = r"D:/ROBOTLESSON/test.csv"
+train = r"train.csv"
+test = r"test.csv"
 def data_precess(filename):
     df = pd.read_csv(filename)
     data = []
@@ -11,16 +11,15 @@ def data_precess(filename):
         data.append(df[i].astype(np.float32))
     if 'CLASS' in df:
         label = np.array(df['CLASS'].astype(np.compat.long))
-        #去掉前面的序号和后面的标签
-        data = np.array(data)[1:-1].T
+        
+        data = np.array(data)[1:-1].T  #去掉前面序号和后面标签
     else:
         label = np.array([])
-        #去掉前面的序号
-        data = np.array(data)[1:].T
+        data = np.array(data)[1:].T  #去掉前面的序号
     return data,label
-train_data,train_labels = data_precess(train_file)
-test_data,_ = data_precess(test_file)
-
+train_data,train_labels = data_precess(train)
+test_data,_ = data_precess(test)
+#计算
 train_data = (train_data+1)/2
 test_data = (test_data+1)/2
 
@@ -37,9 +36,9 @@ print("Accuracy: %0.2f (+/- %0.2f)" % (scores.mean(), scores.std() * 4))
 
 clf.fit(train_data,train_labels)
 out = clf.predict(test_data)
-sbmit = pd.read_csv(r"D:/ROBOTLESSON/sample_submission.csv")
+sbmit = pd.read_csv(r"submission.csv")
 sbmit['CLASS'] = out
-sbmit.to_csv('D:/ROBOTLESSON/sample_submission.csv')
+sbmit.to_csv('submission.csv')
 
 
 class shixu_Model1(nn.Module):
